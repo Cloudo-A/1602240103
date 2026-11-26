@@ -58,7 +58,7 @@
 
 ## 部署
 
-阿里云 ECS（Windows Server 2022）上运行 Nginx、后端 jar 和 MySQL 8：Nginx 在 80/443 端口提供网页并把 `/api` 转发到只监听本机的后端，`/mp/` 为小程序网页体验版；数据库只监听本机。域名 zengziyu.cn 已备案并配置 HTTPS。详见课程报告第十三章。
+阿里云 ECS（Windows Server 2022）上运行 Nginx、后端 jar 和 MySQL 8：Nginx 在 80/443 端口提供网页并把 `/api` 转发到只监听本机的后端，`/mp/` 为小程序网页体验版；数据库只监听本机。域名 zengziyu.cn 已备案并配置 HTTPS。详见课程报告第十三部分。
 
 ## 本地运行
 

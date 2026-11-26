@@ -4,6 +4,7 @@ import com.adc.auth.CurrentUser;
 import com.adc.auth.PatientPrincipal;
 import com.adc.common.RequestRecordService.AccountType;
 import com.adc.common.RequestRecordService.Owner;
+import com.adc.demo.DemoProgress;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.*;
@@ -43,6 +44,8 @@ public class RequestIdFilter extends OncePerRequestFilter {
             String key = req.getHeader("X-Request-Id");
             if (key.isBlank() || !key.equals(key.strip()) || key.length() > 64)
                 throw BusinessException.invalid("X-Request-Id", "请求标识应为 1 至 64 个字符");
+            if (key.startsWith(DemoProgress.KEY_PREFIX))
+                throw BusinessException.invalid("X-Request-Id", "请使用有效的请求标识");
             byte[] bytes = req.getInputStream().readAllBytes();
             String action = req.getMethod();
             var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

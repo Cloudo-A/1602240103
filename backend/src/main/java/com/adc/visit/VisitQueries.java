@@ -131,7 +131,7 @@ public class VisitQueries {
             total(h,lines.getOrDefault(h.id,List.of())))).toList();
     }
 
-    Detail detail(long id, CurrentUser user) {
+    public Detail detail(long id, CurrentUser user) {
         Header h = one(id);
         authorize(user,h.dentist.id());
         var allergy = jdbc.sql("""

@@ -5,8 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import java.util.ArrayList;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Profile("demo")
 @Transactional
-public class DailyDemoAppointments implements ApplicationRunner {
+public class DailyDemoAppointments {
     // Use each historical appointment's dentist, clinic and intended items. These foreign keys
     // remain valid after the user renames a clinic, an employee number or a treatment item.
     private record Slot(String time, String patient, String sourcePatient, String sourceTime, String outcome) {}
@@ -29,29 +28,28 @@ public class DailyDemoAppointments implements ApplicationRunner {
     );
 
     private final JdbcClient jdbc;
-    private final Clock clock;
 
     public DailyDemoAppointments(JdbcClient jdbc, Clock clock) {
         this.jdbc = jdbc;
-        this.clock = clock;
-    }
-
-    @Override
-    public void run(ApplicationArguments args) {
-        seedIfEmpty(LocalDate.now(clock));
     }
 
     public void seedIfEmpty(LocalDate day) {
+        seedAndList(day);
+    }
+
+    List<Long> seedAndList(LocalDate day) {
         // All demo instances acquire this existing singleton before testing the same day.
         jdbc.sql("SELECT singleton FROM patient_number WHERE singleton = 1 FOR UPDATE").query(Integer.class).single();
         var existing = jdbc.sql("""
             SELECT id FROM appointment WHERE scheduled_at >= ? AND scheduled_at < ? LIMIT 1 FOR SHARE
             """).params(day.atStartOfDay(), day.plusDays(1).atStartOfDay()).query(Long.class).optional();
-        if (existing.isPresent()) return;
-        for (Slot slot : TODAY) createAppointment(day.atTime(LocalTime.parse(slot.time())), slot);
+        if (existing.isPresent()) return List.of();
+        var ids = new ArrayList<Long>();
+        for (Slot slot : TODAY) ids.add(createAppointment(day.atTime(LocalTime.parse(slot.time())), slot));
+        return ids;
     }
 
-    private void createAppointment(LocalDateTime scheduled, Slot slot) {
+    private long createAppointment(LocalDateTime scheduled, Slot slot) {
         long source = jdbc.sql("""
             SELECT a.id FROM appointment a JOIN patient p ON p.id = a.patient_id
             WHERE p.account_no = ? AND a.scheduled_at = ? AND a.arrived
@@ -68,6 +66,7 @@ public class DailyDemoAppointments implements ApplicationRunner {
             SELECT ?, item_id FROM appointment_item WHERE appointment_id = ?
             """).params(id, source).update();
         if (arrived) createVisit(id, slot.outcome().equals("K"));
+        return id;
     }
 
     private void createVisit(long appointment, boolean confirmed) {

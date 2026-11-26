@@ -63,15 +63,15 @@ class DemoOperationLogsContractTests extends ContractHttp {
         assertPriceChange(history, "洁牙", "2026-10-01", "150.00");
         assertPriceChange(history, "局部麻醉", "2026-07-01", "35.00");
 
-        var unaffiliatedVisits = jdbc.sql("""
+        // These V7 visits were unbound when V12 ran; V15 must not back-edit their audit trail.
+        var legacyUnloggedVisits = jdbc.sql("""
             SELECT v.id FROM visit v JOIN appointment a ON a.id = v.appointment_id
             WHERE a.scheduled_at IN ('2026-08-26 10:00:00', '2026-11-17 10:00:00')
               AND v.no_treatment_reason IS NOT NULL
-              AND NOT EXISTS (SELECT 1 FROM app_user u WHERE u.dentist_id = v.dentist_id)
             """).query(Long.class).list();
-        assertThat(unaffiliatedVisits).hasSize(2);
+        assertThat(legacyUnloggedVisits).hasSize(2);
         assertThat(history).noneMatch(log -> action(log, "END_WITHOUT_TREATMENT", "VISIT")
-            && unaffiliatedVisits.contains(log.get("targetId").asLong()));
+            && legacyUnloggedVisits.contains(log.get("targetId").asLong()));
     }
 
     @Test void recentWindowAndClinicChangeUseBeijingCalendarDates() throws Exception {

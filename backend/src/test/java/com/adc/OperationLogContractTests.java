@@ -18,7 +18,8 @@ class OperationLogContractTests extends ContractHttp {
 
     @Test void pagesLegacyRowsByBeijingDayAndReadsCurrentDisplayName() throws Exception {
         String hq = token("hq1");
-        String name = "audit" + UUID.randomUUID().toString().replace("-", "");
+        // The numeric keyword below should match the target ID only.
+        String name = "audit" + UUID.randomUUID().toString().replace("-", "").replaceAll("[0-9]", "x");
         jdbc.sql("""
             INSERT INTO app_user(username,password_hash,display_name,role,active)
             SELECT ?,password_hash,'原显示名','FRONT_DESK',false FROM app_user WHERE username='hq1'

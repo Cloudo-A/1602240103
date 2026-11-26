@@ -13,11 +13,9 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -37,13 +35,16 @@ class SettlementService {
     private final VisitQueries visits;
     private final Clock clock;
     private final OperationLogService logs;
+    private final SettlementNumbers numbers;
     private final ObjectMapper json;
 
-    SettlementService(JdbcClient jdbc, VisitQueries visits, Clock clock, OperationLogService logs, ObjectMapper json) {
+    SettlementService(JdbcClient jdbc, VisitQueries visits, Clock clock, OperationLogService logs,
+                      SettlementNumbers numbers, ObjectMapper json) {
         this.jdbc = jdbc;
         this.visits = visits;
         this.clock = clock;
         this.logs = logs;
+        this.numbers = numbers;
         this.json = json;
     }
 
@@ -69,7 +70,7 @@ class SettlementService {
         if (!token(billing).equals(checkToken)) throw BusinessException.changed(null);
 
         var now = LocalDateTime.now(clock).withNano(0);
-        String number = nextNumber(now.toLocalDate());
+        String number = numbers.next(now.toLocalDate());
         var keys = new GeneratedKeyHolder();
         jdbc.sql("""
             INSERT INTO settlement
@@ -90,19 +91,6 @@ class SettlementService {
         if (!"CONFIRMED".equals(billing.status()) || billing.lines().isEmpty()) {
             throw BusinessException.stateNotAllowed("牙医尚未确认这次诊疗，暂时不能开具结算单");
         }
-    }
-
-    private String nextNumber(LocalDate day) {
-        // The upsert locks this day's counter until the slip and its audit record commit.
-        jdbc.sql("""
-            INSERT INTO settlement_sequence (issue_date,last_number) VALUES (?,0)
-            ON DUPLICATE KEY UPDATE last_number=last_number
-            """).param(day).update();
-        int number = jdbc.sql("SELECT last_number FROM settlement_sequence WHERE issue_date=? FOR UPDATE")
-            .param(day).query(Integer.class).single() + 1;
-        if (number > 9999) throw BusinessException.stateNotAllowed("今天的结算单号已用完");
-        jdbc.sql("UPDATE settlement_sequence SET last_number=? WHERE issue_date=?").params(number, day).update();
-        return "JS" + day.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + String.format(Locale.ROOT, "%04d", number);
     }
 
     private String token(Billing billing) {

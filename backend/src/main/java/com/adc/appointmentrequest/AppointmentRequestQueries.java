@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import static com.adc.appointmentrequest.AppointmentRequestDtos.*;
 
 @Repository
-class AppointmentRequestQueries {
+public class AppointmentRequestQueries {
     private static final String SELECT = """
         select r.*, c.name clinic_name,c.phone clinic_phone,
             t.id item_id,t.name item_name,a.scheduled_at,a.cancelled_at,a.arrived,
@@ -34,7 +34,11 @@ class AppointmentRequestQueries {
     }
 
     View get(long id) {
-        return read("where r.id=:id",Map.of("id",id)).stream().findFirst().orElseThrow(BusinessException::notFound);
+        return getAt(id, LocalDateTime.now(clock).withNano(0));
+    }
+
+    public View getAt(long id, LocalDateTime at) {
+        return read("where r.id=:id",Map.of("id",id),at).stream().findFirst().orElseThrow(BusinessException::notFound);
     }
 
     List<View> list(List<String> statuses, Long clinicId, LocalDate from, LocalDate to) {
@@ -56,7 +60,10 @@ class AppointmentRequestQueries {
     }
 
     private List<View> read(String predicate, Map<String,?> params) {
-        var now = LocalDateTime.now(clock).withNano(0);
+        return read(predicate, params, LocalDateTime.now(clock).withNano(0));
+    }
+
+    private List<View> read(String predicate, Map<String,?> params, LocalDateTime now) {
         return jdbc.sql(SELECT + predicate + " order by r.created_at desc,r.id desc,t.id").params(params).query(rs -> {
             var result = new LinkedHashMap<Long,View>();
             while (rs.next()) {

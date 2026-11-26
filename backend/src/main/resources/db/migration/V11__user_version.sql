@@ -1,0 +1,2 @@
+ALTER TABLE app_user
+    ADD COLUMN version INT NOT NULL DEFAULT 0 COMMENT '并发版本号';

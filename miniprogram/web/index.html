@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ADC预约助手 · 微信小程序网页体验版</title>
+<link rel="icon" href="app/static/img/logo.png" />
+<script>
+  // 手机打开（或扫码）时直接进入全屏的小程序页面
+  if (window.matchMedia('(max-width: 760px)').matches) location.replace('app/')
+</script>
+<style>
+  :root { --p: #0e7c74; --p-deep: #0a5c56; --ink: #17302d; --ink-2: #4a5d5a; --ink-3: #7b8b88; --line: #e3ebe9; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--ink);
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: radial-gradient(900px 500px at 85% 0%, rgba(14, 124, 116, 0.12), transparent 60%), #f3f7f6;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 32px; display: grid; grid-template-columns: 1fr auto; gap: 72px; align-items: center; min-height: 100vh; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand img { width: 56px; height: 56px; border-radius: 14px; }
+  .brand b { font-size: 22px; display: block; }
+  .brand small { color: var(--ink-3); letter-spacing: 2px; font-size: 12px; }
+  .kicker { margin-top: 40px; color: var(--p); font-weight: 700; letter-spacing: 3px; font-size: 13px; }
+  h1 { font-size: 40px; line-height: 1.3; margin: 10px 0 16px; }
+  .lead { color: var(--ink-2); line-height: 1.9; font-size: 16px; margin: 0 0 28px; max-width: 520px; }
+  .box { background: #fff; border-radius: 18px; padding: 20px 24px; box-shadow: 0 10px 30px rgba(16, 60, 56, 0.06); max-width: 520px; }
+  .box + .box { margin-top: 16px; }
+  .box h3 { margin: 0 0 10px; font-size: 16px; }
+  .box p, .box li { color: var(--ink-2); font-size: 14.5px; line-height: 1.8; margin: 0; }
+  .box ul { margin: 0; padding-left: 18px; }
+  .box a { color: var(--p); font-weight: 600; }
+  code { background: #e7f2f1; color: var(--p-deep); padding: 1px 7px; border-radius: 6px; font-size: 13.5px; }
+  .qr { display: flex; gap: 20px; align-items: center; }
+  .qr img { width: 116px; height: 116px; border-radius: 10px; border: 1px solid var(--line); }
+  .links { margin-top: 18px; display: flex; gap: 18px; font-size: 14px; }
+  .links a { color: var(--p); text-decoration: none; font-weight: 600; }
+  /* 手机模型 */
+  .phone { width: 390px; height: 820px; border-radius: 52px; padding: 14px; background: #17302d; box-shadow: 0 40px 80px rgba(10, 60, 56, 0.28), inset 0 0 0 2px #2c4a46; position: relative; }
+  .phone::before { content: ''; position: absolute; top: 24px; left: 50%; width: 110px; height: 28px; margin-left: -55px; border-radius: 16px; background: #0d1f1d; z-index: 2; }
+  .screen { width: 100%; height: 100%; border-radius: 40px; overflow: hidden; background: #fff; position: relative; }
+  .status { height: 46px; background: var(--p); }
+  iframe { display: block; width: 100%; height: calc(100% - 46px); border: 0; }
+  .cap { text-align: center; color: var(--ink-3); font-size: 13px; margin-top: 16px; }
+  @media (max-width: 1000px) { .wrap { grid-template-columns: 1fr; gap: 40px; justify-items: center; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <div class="brand">
+        <img src="app/static/img/logo.png" alt="" />
+        <div><b>ADC预约助手</b><small>ANDREW'S DENTAL CHAIN</small></div>
+      </div>
+      <div class="kicker">微信小程序 · 网页体验版</div>
+      <h1>在右边的手机里，<br />直接体验患者预约</h1>
+      <p class="lead">这是 ADC 牙科连锁诊所的微信小程序“ADC预约助手”。小程序涉及医疗服务类目，需要机构资质才能正式发布，因此把同一套代码编译成网页放在这里，界面和功能与微信中一致，账号和数据也与官网、员工后台互通。</p>
+
+      <div class="box">
+        <h3>可以这样体验</h3>
+        <ul>
+          <li>用演示患者 <code>13900000002</code>，密码 <code>123456</code> 登录（底部“我的”）。</li>
+          <li>在“预约”页选门店、日期和时段，提交预约申请。</li>
+          <li>到<a href="https://zengziyu.cn/login" target="_blank">员工后台</a>用 <code>front1</code> / <code>123456</code> 登录，在“预约申请”页转为预约，回到“我的”即可看到“已确认”。</li>
+          <li>也可以自己注册，验证码统一为 <code>123456</code>，请不要填写真实信息。</li>
+        </ul>
+      </div>
+
+      <div class="box qr">
+        <img src="qr.svg" alt="二维码" />
+        <div>
+          <h3>用手机打开</h3>
+          <p>手机相机或微信扫码，即可全屏打开小程序网页版。</p>
+          <div class="links"><a href="https://zengziyu.cn" target="_blank">官网 ›</a><a href="app/" target="_blank">全屏打开 ›</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="phone"><div class="screen"><div class="status"></div><iframe src="app/" title="ADC预约助手"></iframe></div></div>
+      <div class="cap">《系统分析与设计》课程项目 · 演示数据</div>
+    </div>
+  </div>
+</body>
+</html>

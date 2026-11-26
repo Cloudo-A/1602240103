@@ -1,0 +1,23 @@
+# ---- 敏感文件：绝不能上传 ----
+# HTTPS 证书与私钥
+certs/
+*.key
+*.pem
+# 本机数据库连接（含密码）
+application-local.properties
+.env.*.local
+
+# ---- 依赖与编译产物 ----
+node_modules/
+dist/
+target/
+.vite/
+
+# ---- 编辑器与系统文件 ----
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+# 微信开发者工具的个人配置
+project.private.config.json

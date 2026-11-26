@@ -1,0 +1,38 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": { "navigationBarTitleText": "ADC 安德鲁牙科", "enablePullDownRefresh": true }
+		},
+		{
+			"path": "pages/book/book",
+			"style": { "navigationBarTitleText": "预约申请" }
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": { "navigationBarTitleText": "我的预约", "enablePullDownRefresh": true }
+		},
+		{
+			"path": "pages/login/login",
+			"style": { "navigationBarTitleText": "登录 / 注册" }
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "ADC预约助手",
+		"navigationBarBackgroundColor": "#0E7C74",
+		"backgroundColor": "#F3F7F6",
+		"backgroundColorTop": "#0E7C74"
+	},
+	"tabBar": {
+		"color": "#8A9A98",
+		"selectedColor": "#0E7C74",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "white",
+		"list": [
+			{ "pagePath": "pages/index/index", "text": "首页", "iconPath": "static/tab/home.png", "selectedIconPath": "static/tab/home-on.png" },
+			{ "pagePath": "pages/book/book", "text": "预约", "iconPath": "static/tab/book.png", "selectedIconPath": "static/tab/book-on.png" },
+			{ "pagePath": "pages/mine/mine", "text": "我的", "iconPath": "static/tab/mine.png", "selectedIconPath": "static/tab/mine-on.png" }
+		]
+	}
+}

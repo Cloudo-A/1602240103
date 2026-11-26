@@ -1,0 +1,59 @@
+/* 官网（患者端）公用样式：颜色变量、版心宽度。各页面根元素加 class="portal" */
+.portal {
+  --p: #0e7c74;
+  --p-deep: #0a5c56;
+  --p-soft: #e7f2f1;
+  --sand: #f7f3ec;
+  --ink: #17302d;
+  --ink-2: #4a5d5a;
+  --ink-3: #7b8b88;
+  --line: #e3ebe9;
+  --radius: 18px;
+  color: var(--ink);
+  background: #fff;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: clip;
+  min-height: 100vh;
+}
+.portal .wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.portal .kicker {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--p);
+  margin-bottom: 10px;
+}
+.portal .kicker::before {
+  content: '— ';
+}
+@media (max-width: 600px) {
+  .portal .wrap {
+    padding: 0 16px;
+  }
+  .portal .hide-sm {
+    display: none !important;
+  }
+}
+html {
+  scroll-padding-top: 84px;
+}
+.portal-drawer .el-drawer__body {
+  padding: 0 12px;
+}
+
+/* 区块标题与滚动显现：首页和各子组件（费用估算、一份病历、常见问题）共用 */
+.portal .section-head { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+.portal .section-head.left { text-align: left; margin: 0; }
+.portal .section-head h2 { font-size: 34px; line-height: 1.35; margin: 0 0 14px; font-weight: 800; letter-spacing: 0.5px; }
+.portal .section-head p { color: var(--ink-2); margin: 0; }
+.portal .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.portal .reveal.shown { opacity: 1; transform: none; }
+@media (max-width: 600px) {
+  .portal .section-head h2 { font-size: 26px; }
+}
